@@ -256,6 +256,8 @@ export default function App() {
         @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
         .shimmer{background:linear-gradient(90deg,#D6E8F5 25%,#EAF3FA 50%,#D6E8F5 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px;}
         @keyframes spin{to{transform:rotate(360deg)}}.spin{animation:spin 1s linear infinite;display:inline-block;}
+        @keyframes gravityDrop{0%{transform:translateY(-60px) rotate(-8deg);opacity:0;}60%{transform:translateY(6px) rotate(2deg);opacity:1;}80%{transform:translateY(-3px) rotate(-1deg);}100%{transform:translateY(0) rotate(0deg);opacity:1;}}
+        .gravity{animation:gravityDrop 0.5s cubic-bezier(.22,.61,.36,1) both;}
         input:focus{border-color:#434951 !important;background:#fff !important;}
       `}</style>
 
@@ -263,7 +265,7 @@ export default function App() {
       <div style={{ padding:"20px 20px 24px", background:C.bg }}>
         <div style={{ display:"flex", alignItems:"flex-end", justifyContent:"space-between" }}>
           <div>
-            <div style={{ fontSize:11, color:C.textLight, letterSpacing:2, textTransform:"uppercase", marginBottom:3 }}>当断则断   该扔就扔</div>
+            <div style={{ fontSize:11, color:C.textLight, letterSpacing:2, textTransform:"uppercase", marginBottom:3, textAlign:"left" }}>当断则断   该扔就扔</div>
             <div style={{ fontSize:36, fontWeight:100, color:C.text, letterSpacing:4 }}>每日一轻</div>
           </div>
           <button className="press" onClick={()=>setView(view==="summary"?"calendar":"summary")} style={{
@@ -275,7 +277,7 @@ export default function App() {
 
       {/* ── CALENDAR ── */}
       {view==="calendar" && (
-        <div className="fade" style={{ paddingBottom:80 }}>
+        <div className="fade" style={{ paddingBottom:80, paddingTop:16 }}>
 
           {/* Calendar card — full width, month nav inside */}
           <div style={{ background:C.card, boxShadow:"0 2px 16px rgba(74,130,196,0.10)", borderRadius:40, padding:"16px 16px 18px" }}>
@@ -383,7 +385,7 @@ export default function App() {
                 <button className="press" onClick={()=>openAdd(selDate)} style={{ background:C.primary, color:"#fff", border:"none", borderRadius:100, padding:"10px 28px", fontSize:14, fontWeight:700, boxShadow:"0 4px 14px rgba(74,144,196,0.35)" }}>立即记录</button>
               </div>
             ) : getDateItems(selDate.key).map(item=>(
-              <div key={item.id} className="press" onClick={()=>{setSelItem(item);setView("detail");}} style={{ ...card(), display:"flex", alignItems:"center", overflow:"hidden" }}>
+              <div key={item.id} className="press" onClick={()=>{setSelItem(item);setView("detail");}} style={{ ...card(), display:"flex", alignItems:"center", padding:"16px" }}>
                 <div style={{ width:70, height:70, flexShrink:0, background:item.bg||C.primaryLight, overflow:"hidden" }}>
                   {item.image ? <img src={item.image} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
                     : <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", fontSize:26 }}>{item.emoji}</div>}
@@ -516,8 +518,20 @@ export default function App() {
               <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
                 {allItems.map((item,i)=>(
                   item.image
-                    ? <div key={i} style={{ width:50, height:50, borderRadius:12, overflow:"hidden", border:`2px solid ${item.color||C.primary}` }}><img src={item.image} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} /></div>
-                    : <div key={i} style={{ width:50, height:50, borderRadius:12, background:item.bg||C.primaryLight, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", border:`2px solid ${item.color||C.primary}`, fontSize:20 }}>
+                    ? <div key={i} className="gravity" style={{ width:50, height:50, flexShrink:0, animationDelay:`${i*0.06}s` }}>
+                        <svg viewBox="0 0 90 94" style={{ width:"100%", height:"100%" }}>
+                          <defs><clipPath id={`sc${i}`}><path d="M39.7535 2.60938C42.661 -0.203365 47.2756 -0.203364 50.1832 2.60938L54.1705 6.4668C56.0548 8.2897 58.6751 9.14157 61.2711 8.77441L66.7642 7.99707C70.7698 7.43051 74.5037 10.1434 75.2027 14.1279L76.1607 19.5928C76.6138 22.1749 78.2335 24.4031 80.5494 25.6318L85.4507 28.2324C89.024 30.1285 90.4497 34.5171 88.6734 38.1514L86.2369 43.1357C85.0855 45.4912 85.0855 48.2471 86.2369 50.6025L88.6734 55.5869C90.4497 59.2212 89.024 63.6098 85.4507 65.5059L80.5494 68.1064C78.2335 69.3352 76.6138 71.5633 76.1607 74.1455L75.2027 79.6104C74.5037 83.5949 70.7698 86.3078 66.7642 85.7412L61.2711 84.9639C58.6751 84.5967 56.0548 85.4486 54.1705 87.2715L50.1832 91.1289C47.2756 93.9416 42.661 93.9416 39.7535 91.1289L35.7662 87.2715C33.8818 85.4486 31.2615 84.5967 28.6656 84.9639L23.1724 85.7412C19.1669 86.3078 15.4329 83.5949 14.7339 79.6104L13.7759 74.1455C13.3229 71.5633 11.7031 69.3352 9.38727 68.1064L4.4859 65.5059C0.912633 63.6098 -0.513071 59.2212 1.26324 55.5869L3.69977 50.6025C4.85117 48.2471 4.85117 45.4912 3.69977 43.1357L1.26324 38.1514C-0.513072 34.5171 0.912634 30.1285 4.4859 28.2324L9.38727 25.6318C11.7031 24.4031 13.3229 22.1749 13.7759 19.5928L14.7339 14.1279C15.4329 10.1434 19.1669 7.43051 23.1724 7.99707L28.6656 8.77441C31.2615 9.14157 33.8818 8.2897 35.7662 6.4668L39.7535 2.60938Z"/></clipPath></defs>
+                          <image href={item.image} x="0" y="0" width="90" height="94" clipPath={`url(#sc${i})`} preserveAspectRatio="xMidYMid slice"/>
+                          <path d="M39.7535 2.60938C42.661 -0.203365 47.2756 -0.203364 50.1832 2.60938L54.1705 6.4668C56.0548 8.2897 58.6751 9.14157 61.2711 8.77441L66.7642 7.99707C70.7698 7.43051 74.5037 10.1434 75.2027 14.1279L76.1607 19.5928C76.6138 22.1749 78.2335 24.4031 80.5494 25.6318L85.4507 28.2324C89.024 30.1285 90.4497 34.5171 88.6734 38.1514L86.2369 43.1357C85.0855 45.4912 85.0855 48.2471 86.2369 50.6025L88.6734 55.5869C90.4497 59.2212 89.024 63.6098 85.4507 65.5059L80.5494 68.1064C78.2335 69.3352 76.6138 71.5633 76.1607 74.1455L75.2027 79.6104C74.5037 83.5949 70.7698 86.3078 66.7642 85.7412L61.2711 84.9639C58.6751 84.5967 56.0548 85.4486 54.1705 87.2715L50.1832 91.1289C47.2756 93.9416 42.661 93.9416 39.7535 91.1289L35.7662 87.2715C33.8818 85.4486 31.2615 84.5967 28.6656 84.9639L23.1724 85.7412C19.1669 86.3078 15.4329 83.5949 14.7339 79.6104L13.7759 74.1455C13.3229 71.5633 11.7031 69.3352 9.38727 68.1064L4.4859 65.5059C0.912633 63.6098 -0.513071 59.2212 1.26324 55.5869L3.69977 50.6025C4.85117 48.2471 4.85117 45.4912 3.69977 43.1357L1.26324 38.1514C-0.513072 34.5171 0.912634 30.1285 4.4859 28.2324L9.38727 25.6318C11.7031 24.4031 13.3229 22.1749 13.7759 19.5928L14.7339 14.1279C15.4329 10.1434 19.1669 7.43051 23.1724 7.99707L28.6656 8.77441C31.2615 9.14157 33.8818 8.2897 35.7662 6.4668L39.7535 2.60938Z" fill="none" stroke={item.color||C.primary} strokeWidth="1"/>
+                        </svg>
+                      </div>
+                    : <div key={i} className="gravity" style={{ width:50, height:50, animationDelay:`${i*0.06}s` }}>
+                        <svg viewBox="0 0 90 94" style={{ width:"100%", height:"100%" }}>
+                          <path d="M39.7535 2.60938C42.661 -0.203365 47.2756 -0.203364 50.1832 2.60938L54.1705 6.4668C56.0548 8.2897 58.6751 9.14157 61.2711 8.77441L66.7642 7.99707C70.7698 7.43051 74.5037 10.1434 75.2027 14.1279L76.1607 19.5928C76.6138 22.1749 78.2335 24.4031 80.5494 25.6318L85.4507 28.2324C89.024 30.1285 90.4497 34.5171 88.6734 38.1514L86.2369 43.1357C85.0855 45.4912 85.0855 48.2471 86.2369 50.6025L88.6734 55.5869C90.4497 59.2212 89.024 63.6098 85.4507 65.5059L80.5494 68.1064C78.2335 69.3352 76.6138 71.5633 76.1607 74.1455L75.2027 79.6104C74.5037 83.5949 70.7698 86.3078 66.7642 85.7412L61.2711 84.9639C58.6751 84.5967 56.0548 85.4486 54.1705 87.2715L50.1832 91.1289C47.2756 93.9416 42.661 93.9416 39.7535 91.1289L35.7662 87.2715C33.8818 85.4486 31.2615 84.5967 28.6656 84.9639L23.1724 85.7412C19.1669 86.3078 15.4329 83.5949 14.7339 79.6104L13.7759 74.1455C13.3229 71.5633 11.7031 69.3352 9.38727 68.1064L4.4859 65.5059C0.912633 63.6098 -0.513071 59.2212 1.26324 55.5869L3.69977 50.6025C4.85117 48.2471 4.85117 45.4912 3.69977 43.1357L1.26324 38.1514C-0.513072 34.5171 0.912634 30.1285 4.4859 28.2324L9.38727 25.6318C11.7031 24.4031 13.3229 22.1749 13.7759 19.5928L14.7339 14.1279C15.4329 10.1434 19.1669 7.43051 23.1724 7.99707L28.6656 8.77441C31.2615 9.14157 33.8818 8.2897 35.7662 6.4668L39.7535 2.60938Z" fill={item.bg||C.primaryLight} stroke={item.color||C.primary} strokeWidth="1"/>
+                          <text x="45" y="52" textAnchor="middle" dominantBaseline="middle" fontSize="28">{item.emoji}</text>
+                        </svg>
+                      </div>
+                    ) || (<div key={i} style={{ width:50, height:50 }}>
                         {item.emoji}
                         <div style={{ fontSize:7, color:C.primary, marginTop:1 }}>{item.name}</div>
                       </div>
@@ -539,10 +553,16 @@ export default function App() {
                 {[...allItems].reverse().map((item,i)=>{
                   const parts=item.date.split("-");
                   return (
-                    <div key={i} className="press" onClick={()=>{ setSelDate({year:parseInt(parts[0]),month:parseInt(parts[1])-1,day:parseInt(parts[2]),key:item.date}); setSelItem(item); setView("detail"); }} style={{ ...card(), display:"flex", alignItems:"center", overflow:"hidden" }}>
-                      <div style={{ width:58, height:58, flexShrink:0, background:item.bg||C.primaryLight, overflow:"hidden" }}>
-                        {item.image ? <img src={item.image} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-                          : <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22 }}>{item.emoji}</div>}
+                    <div key={i} className="press" onClick={()=>{ setSelDate({year:parseInt(parts[0]),month:parseInt(parts[1])-1,day:parseInt(parts[2]),key:item.date}); setSelItem(item); setView("detail"); }} style={{ ...card(), display:"flex", alignItems:"center", padding:"16px" }}>
+                      <div style={{ width:40, height:40, flexShrink:0 }}>
+                        <svg viewBox="0 0 90 94" style={{ width:"100%", height:"100%" }}>
+                          <defs><clipPath id={`rl${i}`}><path d="M39.7535 2.60938C42.661 -0.203365 47.2756 -0.203364 50.1832 2.60938L54.1705 6.4668C56.0548 8.2897 58.6751 9.14157 61.2711 8.77441L66.7642 7.99707C70.7698 7.43051 74.5037 10.1434 75.2027 14.1279L76.1607 19.5928C76.6138 22.1749 78.2335 24.4031 80.5494 25.6318L85.4507 28.2324C89.024 30.1285 90.4497 34.5171 88.6734 38.1514L86.2369 43.1357C85.0855 45.4912 85.0855 48.2471 86.2369 50.6025L88.6734 55.5869C90.4497 59.2212 89.024 63.6098 85.4507 65.5059L80.5494 68.1064C78.2335 69.3352 76.6138 71.5633 76.1607 74.1455L75.2027 79.6104C74.5037 83.5949 70.7698 86.3078 66.7642 85.7412L61.2711 84.9639C58.6751 84.5967 56.0548 85.4486 54.1705 87.2715L50.1832 91.1289C47.2756 93.9416 42.661 93.9416 39.7535 91.1289L35.7662 87.2715C33.8818 85.4486 31.2615 84.5967 28.6656 84.9639L23.1724 85.7412C19.1669 86.3078 15.4329 83.5949 14.7339 79.6104L13.7759 74.1455C13.3229 71.5633 11.7031 69.3352 9.38727 68.1064L4.4859 65.5059C0.912633 63.6098 -0.513071 59.2212 1.26324 55.5869L3.69977 50.6025C4.85117 48.2471 4.85117 45.4912 3.69977 43.1357L1.26324 38.1514C-0.513072 34.5171 0.912634 30.1285 4.4859 28.2324L9.38727 25.6318C11.7031 24.4031 13.3229 22.1749 13.7759 19.5928L14.7339 14.1279C15.4329 10.1434 19.1669 7.43051 23.1724 7.99707L28.6656 8.77441C31.2615 9.14157 33.8818 8.2897 35.7662 6.4668L39.7535 2.60938Z"/></clipPath></defs>
+                          {item.image
+                            ? <image href={item.image} x="0" y="0" width="90" height="94" clipPath={`url(#rl${i})`} preserveAspectRatio="xMidYMid slice"/>
+                            : <><path d="M39.7535 2.60938C42.661 -0.203365 47.2756 -0.203364 50.1832 2.60938L54.1705 6.4668C56.0548 8.2897 58.6751 9.14157 61.2711 8.77441L66.7642 7.99707C70.7698 7.43051 74.5037 10.1434 75.2027 14.1279L76.1607 19.5928C76.6138 22.1749 78.2335 24.4031 80.5494 25.6318L85.4507 28.2324C89.024 30.1285 90.4497 34.5171 88.6734 38.1514L86.2369 43.1357C85.0855 45.4912 85.0855 48.2471 86.2369 50.6025L88.6734 55.5869C90.4497 59.2212 89.024 63.6098 85.4507 65.5059L80.5494 68.1064C78.2335 69.3352 76.6138 71.5633 76.1607 74.1455L75.2027 79.6104C74.5037 83.5949 70.7698 86.3078 66.7642 85.7412L61.2711 84.9639C58.6751 84.5967 56.0548 85.4486 54.1705 87.2715L50.1832 91.1289C47.2756 93.9416 42.661 93.9416 39.7535 91.1289L35.7662 87.2715C33.8818 85.4486 31.2615 84.5967 28.6656 84.9639L23.1724 85.7412C19.1669 86.3078 15.4329 83.5949 14.7339 79.6104L13.7759 74.1455C13.3229 71.5633 11.7031 69.3352 9.38727 68.1064L4.4859 65.5059C0.912633 63.6098 -0.513071 59.2212 1.26324 55.5869L3.69977 50.6025C4.85117 48.2471 4.85117 45.4912 3.69977 43.1357L1.26324 38.1514C-0.513072 34.5171 0.912634 30.1285 4.4859 28.2324L9.38727 25.6318C11.7031 24.4031 13.3229 22.1749 13.7759 19.5928L14.7339 14.1279C15.4329 10.1434 19.1669 7.43051 23.1724 7.99707L28.6656 8.77441C31.2615 9.14157 33.8818 8.2897 35.7662 6.4668L39.7535 2.60938Z" fill={item.bg||C.primaryLight}/><text x="45" y="52" textAnchor="middle" dominantBaseline="middle" fontSize="30">{item.emoji}</text></>
+                          }
+                          <path d="M39.7535 2.60938C42.661 -0.203365 47.2756 -0.203364 50.1832 2.60938L54.1705 6.4668C56.0548 8.2897 58.6751 9.14157 61.2711 8.77441L66.7642 7.99707C70.7698 7.43051 74.5037 10.1434 75.2027 14.1279L76.1607 19.5928C76.6138 22.1749 78.2335 24.4031 80.5494 25.6318L85.4507 28.2324C89.024 30.1285 90.4497 34.5171 88.6734 38.1514L86.2369 43.1357C85.0855 45.4912 85.0855 48.2471 86.2369 50.6025L88.6734 55.5869C90.4497 59.2212 89.024 63.6098 85.4507 65.5059L80.5494 68.1064C78.2335 69.3352 76.6138 71.5633 76.1607 74.1455L75.2027 79.6104C74.5037 83.5949 70.7698 86.3078 66.7642 85.7412L61.2711 84.9639C58.6751 84.5967 56.0548 85.4486 54.1705 87.2715L50.1832 91.1289C47.2756 93.9416 42.661 93.9416 39.7535 91.1289L35.7662 87.2715C33.8818 85.4486 31.2615 84.5967 28.6656 84.9639L23.1724 85.7412C19.1669 86.3078 15.4329 83.5949 14.7339 79.6104L13.7759 74.1455C13.3229 71.5633 11.7031 69.3352 9.38727 68.1064L4.4859 65.5059C0.912633 63.6098 -0.513071 59.2212 1.26324 55.5869L3.69977 50.6025C4.85117 48.2471 4.85117 45.4912 3.69977 43.1357L1.26324 38.1514C-0.513072 34.5171 0.912634 30.1285 4.4859 28.2324L9.38727 25.6318C11.7031 24.4031 13.3229 22.1749 13.7759 19.5928L14.7339 14.1279C15.4329 10.1434 19.1669 7.43051 23.1724 7.99707L28.6656 8.77441C31.2615 9.14157 33.8818 8.2897 35.7662 6.4668L39.7535 2.60938Z" fill="none" stroke={item.color||C.primary} strokeWidth="1"/>
+                        </svg>
                       </div>
                       <div style={{ flex:1, padding:"0 12px", minWidth:0 }}>
                         <div style={{ fontSize:14, fontWeight:700 }}>{item.name}</div>
