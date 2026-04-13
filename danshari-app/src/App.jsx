@@ -243,9 +243,9 @@ export default function App() {
   const monthItems = allItems.filter(i=>i.date.startsWith(monthPrefix));
 
   return (
-    <div style={{ minHeight:"100vh", background:C.bg, fontFamily:"'Songti SC','STSong','SimSun',Georgia,serif", color:C.text }}>
+    <div style={{ minHeight:"100vh", background:C.bg, fontFamily:"'Songti SC','STSong','SimSun','Hiragino Mincho ProN',Georgia,serif", color:C.text }}>
       <style>{`
-        *{box-sizing:border-box;margin:0;padding:0;}
+        *{box-sizing:border-box;margin:0;padding:0;} html,body{overscroll-behavior:none;overscroll-behavior-y:none;background:#E9F3FD;}
         
         .fade{animation:fadeUp 0.25s ease;}
         @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -260,10 +260,10 @@ export default function App() {
       `}</style>
 
       {/* ── HEADER ── */}
-      <div style={{ padding:"20px 20px 24px" }}>
+      <div style={{ padding:"20px 20px 24px", background:C.bg }}>
         <div style={{ display:"flex", alignItems:"flex-end", justifyContent:"space-between" }}>
           <div>
-            <div style={{ fontSize:11, color:C.textLight, letterSpacing:2, textTransform:"uppercase", marginBottom:3 }}>断 舍 离</div>
+            <div style={{ fontSize:11, color:C.textLight, letterSpacing:2, textTransform:"uppercase", marginBottom:3 }}>当断则断   该扔就扔</div>
             <div style={{ fontSize:26, fontWeight:800, color:C.text, letterSpacing:-0.5 }}>每日一轻</div>
           </div>
           <button className="press" onClick={()=>setView(view==="summary"?"calendar":"summary")} style={{
@@ -359,7 +359,7 @@ export default function App() {
               fontSize:15, fontWeight:700, letterSpacing:0.5,
               boxShadow:"0 6px 20px rgba(67,73,81,0.3)"
             }}>+ 记录今日断舍离</button>
-            <div style={{ textAlign:"center", fontSize:10, color:C.textLight, marginTop:8, letterSpacing:3 }}>当断则断   该扔就扔</div>
+
           </div>
         </div>
       )}
