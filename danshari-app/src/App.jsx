@@ -243,8 +243,15 @@ export default function App() {
   const monthItems = allItems.filter(i=>i.date.startsWith(monthPrefix));
 
   return (
-    <div style={{ minHeight:"100vh", background:C.bg, fontFamily:"'Songti SC','STSong','SimSun','Hiragino Mincho ProN',Georgia,serif", color:C.text }}>
+    <div style={{ minHeight:"100vh", background:C.bg, fontFamily:"HuiWen,'Songti SC',Georgia,serif", color:C.text }}>
       <style>{`
+        @font-face {
+          font-family: 'HuiWen';
+          src: url('/汇文明朝体.otf') format('opentype');
+          font-weight: normal;
+          font-style: normal;
+          font-display: swap;
+        }
         *{box-sizing:border-box;margin:0;padding:0;} html,body{overscroll-behavior:none;overscroll-behavior-y:none;background:#E9F3FD;}
         
         .fade{animation:fadeUp 0.25s ease;}
