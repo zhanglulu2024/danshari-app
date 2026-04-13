@@ -243,10 +243,10 @@ export default function App() {
   const monthItems = allItems.filter(i=>i.date.startsWith(monthPrefix));
 
   return (
-    <div style={{ minHeight:"100vh", background:C.bg, fontFamily:"'Noto Serif SC','Georgia','Times New Roman',serif", color:C.text }}>
+    <div style={{ minHeight:"100vh", background:C.bg, fontFamily:"'Songti SC','STSong','SimSun',Georgia,serif", color:C.text }}>
       <style>{`
         *{box-sizing:border-box;margin:0;padding:0;}
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&display=swap');
+        
         .fade{animation:fadeUp 0.25s ease;}
         @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
         .pop{animation:pop 0.35s cubic-bezier(.34,1.56,.64,1);}
